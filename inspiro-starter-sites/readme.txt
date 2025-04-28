@@ -3,7 +3,7 @@ Contributors: 		WPZOOM
 Donate link:		http://paypal.me/wpzm/10usd
 Author URI:			https://www.wpzoom.com/  
 Requires at least: 	6.0
-Tested up to: 		6.7  
+Tested up to: 		6.8
 Requires PHP: 		7.4  
 Stable tag: 		1.0.7
 License: 			GPLv2 or later  
