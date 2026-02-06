@@ -3,9 +3,9 @@ Contributors: 		WPZOOM
 Donate link:		http://paypal.me/wpzm/10usd
 Author URI:			https://www.wpzoom.com/  
 Requires at least: 	6.0
-Tested up to: 		6.8
+Tested up to: 		6.9
 Requires PHP: 		7.4  
-Stable tag: 		1.0.9
+Stable tag: 		1.0.13
 License: 			GPLv2 or later  
 License URI: 		https://www.gnu.org/licenses/gpl-2.0.html
 Tags: 				starter templates, Gutenberg, Elementor, WooCommerce
@@ -54,7 +54,7 @@ This plugin incorporates code from the [One Click Demo Import](https://wordpress
 
 = 🙌 FOLLOW US =
 
-* 🐦 [Twitter](https://twitter.com/wpzoom)
+* 🐦 [X](https://x.com/wpzoom)
 * 📘 [Facebook](https://facebook.com/wpzoom)
 * 📘 [Facebook Group](https://www.facebook.com/groups/wpzoom)
 * 🌄 [Instagram](https://instagram.com/wpzoom)
@@ -86,6 +86,18 @@ Yes, all templates can be customized using either Gutenberg or Elementor, depend
 1. Demo Importer
 
 == Changelog ==
+
+= 1.0.13 =
+* New demo: Video Production
+
+= 1.0.12 =
+* Minor bug fix
+
+= 1.0.11 =
+* New demo: Green Energy
+
+= 1.0.10 =
+* Detect & suggest to remove default starter content in Inspiro Lite
 
 = 1.0.9 =
 * New demo: Remix

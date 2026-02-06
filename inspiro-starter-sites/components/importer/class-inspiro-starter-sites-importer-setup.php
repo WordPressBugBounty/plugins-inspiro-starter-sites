@@ -123,7 +123,7 @@ class Inspiro_Starter_Sites_Importer_Setup {
 				'required' => true,
 			];
 
-		} elseif ( $import_step === '4' || $import_step === '5' || $import_step === '9' || $import_step === '10'   ) {
+		} elseif ( $import_step === '4' || $import_step === '5' || $import_step === '9' || $import_step === '10' ) {
 
             $theme_plugins[] =  [
                 'name'     => 'WPZOOM Portfolio',
@@ -160,6 +160,57 @@ class Inspiro_Starter_Sites_Importer_Setup {
                 'name'     => 'Makeiteasy Slider',
                 'slug'     => 'makeiteasy-slider',
                 'desc'     => 'Block based slider, leverages the speed and versatility of the Swiper slider.',
+                'required' => true,
+            ];
+        } elseif ( $import_step === '11' ) {
+
+            $theme_plugins[] =  [
+                'name'     => 'Image Slider Block',
+                'slug'     => 'slider-block',
+                'desc'     => 'Display Multiple Images In Beautiful Slider & Reduce Page Scroll.',
+                'required' => true,
+            ];
+
+            $theme_plugins[] =  [
+                'name'     => 'WPZOOM Portfolio',
+                'slug'     => 'wpzoom-portfolio',
+                'desc'     => 'Showcases your projects in a professional and visually appealing portfolio layout.',
+                'required' => true,
+            ];
+
+            $theme_plugins[] =  [
+                'name'     => 'The Icon Block',
+                'slug'     => 'icon-block',
+                'desc'     => 'Easily add SVG icons and graphics to the WordPress block editor.',
+                'required' => true,
+            ];
+        } elseif ( $import_step === '12' ) {
+
+            $theme_plugins[] =  [
+                'name'     => 'Image Slider Block',
+                'slug'     => 'slider-block',
+                'desc'     => 'Display Multiple Images In Beautiful Slider & Reduce Page Scroll.',
+                'required' => true,
+            ];
+
+            $theme_plugins[] =  [
+                'name'     => 'WPZOOM Portfolio',
+                'slug'     => 'wpzoom-portfolio',
+                'desc'     => 'Showcases your projects in a professional and visually appealing portfolio layout.',
+                'required' => true,
+            ];
+
+            $theme_plugins[] = [
+                'name'     => 'Video Popup Block by WPZOOM',
+                'slug'     => 'wpzoom-video-popup-block',
+                'desc'     => 'Enables you to embed engaging video popups on your WordPress site effortlessly.',
+                'required' => true,
+            ];
+
+            $theme_plugins[] =  [
+                'name'     => 'The Icon Block',
+                'slug'     => 'icon-block',
+                'desc'     => 'Easily add SVG icons and graphics to the WordPress block editor.',
                 'required' => true,
             ];
         }
@@ -270,6 +321,24 @@ class Inspiro_Starter_Sites_Importer_Setup {
                 'import_customizer_file_url' => 'https://www.wpzoom.com/downloads/xml/inspiro-lite-remix.dat',
                 'import_preview_image_url'   => $demos_preview_url .  'remix.png',
                 'preview_url'                => 'https://demo.wpzoom.com/inspiro-lite-remix/',
+            ],
+            [
+                'import_id'                  => 'inspiro-lite-energy',
+                'import_file_name'           => 'Green Energy (New)',
+                'import_file_url'            => 'https://www.wpzoom.com/downloads/xml/inspiro-lite-energy.xml',
+                'import_widget_file_url'     => 'https://www.wpzoom.com/downloads/xml/inspiro-lite-energy.wie',
+                'import_customizer_file_url' => 'https://www.wpzoom.com/downloads/xml/inspiro-lite-energy.dat',
+                'import_preview_image_url'   => $demos_preview_url .  'energy.png',
+                'preview_url'                => 'https://inspiro.wpzoom.com/energy/',
+            ],
+            [
+                'import_id'                  => 'inspiro-lite-video',
+                'import_file_name'           => 'Video Production (Lite)',
+                'import_file_url'            => 'https://www.wpzoom.com/downloads/xml/inspiro-lite-video.xml',
+                'import_widget_file_url'     => 'https://www.wpzoom.com/downloads/xml/inspiro-lite-video.wie',
+                'import_customizer_file_url' => 'https://www.wpzoom.com/downloads/xml/inspiro-lite-video.dat',
+                'import_preview_image_url'   => $demos_preview_url .  'video.png',
+                'preview_url'                => 'https://inspiro.wpzoom.com/video/',
             ],
 		];
 	}
@@ -521,6 +590,9 @@ class Inspiro_Starter_Sites_Importer_Setup {
 				case 'inspiro-lite-persona':
 					$demo_layout = 'persona';
 					break;
+                case 'inspiro-lite-energy':
+                    $demo_layout = 'energy-blocks';
+                    break;
 				// Add more demo mappings as needed
 			}
 			
