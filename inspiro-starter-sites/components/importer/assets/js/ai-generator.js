@@ -203,7 +203,10 @@ jQuery( function ( $ ) {
 								'<p class="js-iss-ai-replace-text"></p>' +
 								'<label class="iss-ai-replace-check"><input type="checkbox" class="js-iss-ai-replace" checked> <span>' + esc( t.replace_checkbox || '' ) + '</span></label>' +
 								'<p class="iss-ai-replace-hint">' + esc( t.replace_keep_hint || '' ) + '</p>' +
-								'<button type="button" class="iss-ai-delete-link js-iss-ai-delete">' + esc( t.delete_now || '' ) + '</button>' +
+								'<div class="iss-ai-replace-actions">' +
+									'<button type="button" class="iss-ai-mini-btn iss-ai-mini-btn--danger js-iss-ai-delete">' + esc( t.delete_now || '' ) + '</button>' +
+									'<button type="button" class="iss-ai-mini-btn js-iss-ai-edit-css">' + esc( t.edit_css_link || '' ) + '</button>' +
+								'</div>' +
 							'</div>' +
 							'<p class="iss-ai-delete-result js-iss-ai-delete-result" hidden></p>' +
 
@@ -263,6 +266,18 @@ jQuery( function ( $ ) {
 							'<div class="iss-ai-actions">' +
 								'<a href="' + esc( config.site_url || '#' ) + '" target="_blank" rel="noopener" class="button button-primary js-iss-ai-view-site">' + esc( t.view_site || '' ) + '</a>' +
 								'<a href="' + esc( config.pages_url || '#' ) + '" class="button">' + esc( t.edit_pages || '' ) + '</a>' +
+							'</div>' +
+						'</div>' +
+
+						// Step: CSS editor for the active demo.
+						'<div class="iss-ai-step iss-ai-step-css" data-step="css">' +
+							'<h3>' + esc( t.edit_css_title || '' ) + '</h3>' +
+							'<p class="iss-ai-css-intro js-iss-ai-css-intro"></p>' +
+							'<textarea class="iss-ai-css-editor js-iss-ai-css-editor" spellcheck="false" rows="18"></textarea>' +
+							'<p class="iss-ai-css-result js-iss-ai-css-result" hidden></p>' +
+							'<div class="iss-ai-actions">' +
+								'<button type="button" class="button button-primary js-iss-ai-css-save">' + esc( t.edit_css_save || '' ) + '</button>' +
+								'<button type="button" class="button js-iss-ai-css-back">' + esc( t.back || '' ) + '</button>' +
 							'</div>' +
 						'</div>' +
 
@@ -493,9 +508,9 @@ jQuery( function ( $ ) {
 
 		$notice.find( 'strong' ).first().text( title );
 		$notice.find( '.js-iss-ai-replace-text' ).text( text );
-		// The "delete now" link deletes AI demos only — hide it when the
-		// warning is about a classic starter-site import.
-		$notice.find( '.js-iss-ai-delete' ).toggle( !! ( previous && previous.page_count ) );
+		// Both actions operate on an AI demo — hide them when the warning is
+		// about a classic starter-site import instead.
+		$notice.find( '.iss-ai-replace-actions' ).toggle( !! ( previous && previous.page_count ) );
 		$notice.removeAttr( 'hidden' );
 	}
 
@@ -907,6 +922,88 @@ jQuery( function ( $ ) {
 			.always( function () {
 				$button.prop( 'disabled', false ).text( t.delete_now || '' );
 			} );
+	} );
+
+	// WordPress' CodeMirror instance for the stylesheet, created on first use.
+	var cssEditor = null;
+
+	// Read the stylesheet from CodeMirror when it is active, the raw textarea
+	// otherwise (syntax highlighting can be switched off per user profile).
+	function cssEditorValue() {
+		return cssEditor ? cssEditor.codemirror.getValue() : ( $root.find( '.js-iss-ai-css-editor' ).val() || '' );
+	}
+
+	function cssEditorSetValue( css ) {
+		$root.find( '.js-iss-ai-css-editor' ).val( css );
+
+		if ( cssEditor ) {
+			cssEditor.codemirror.setValue( css );
+			return;
+		}
+
+		if ( config.code_editor && window.wp && wp.codeEditor ) {
+			cssEditor = wp.codeEditor.initialize( $root.find( '.js-iss-ai-css-editor' )[ 0 ], config.code_editor );
+		}
+	}
+
+	// View / edit the active demo's stylesheet. Handy for tweaking a color or
+	// a spacing value without opening every page in the editor.
+	$root.on( 'click', '.js-iss-ai-edit-css', function () {
+		var $button = $( this ).prop( 'disabled', true );
+
+		ajax( 'inspiro_starter_sites_ai_get_css', {}, 30000 )
+			.done( function ( response ) {
+				if ( ! response || ! response.success || ! response.data ) {
+					window.alert( responseMessage( response ) );
+					return;
+				}
+				$root.find( '.js-iss-ai-css-intro' ).text(
+					sprintf( t.edit_css_intro || '', response.data.site_title || '' )
+				);
+				$root.find( '.js-iss-ai-css-result' ).attr( 'hidden', 'hidden' );
+				showStep( 'css' );
+
+				// Initialize/populate after the step is visible: CodeMirror
+				// measures the textarea, and gets it wrong while hidden.
+				cssEditorSetValue( response.data.css || '' );
+				if ( cssEditor ) {
+					cssEditor.codemirror.refresh();
+				}
+			} )
+			.fail( function () {
+				window.alert( t.error_generic || '' );
+			} )
+			.always( function () {
+				$button.prop( 'disabled', false );
+			} );
+	} );
+
+	$root.on( 'click', '.js-iss-ai-css-save', function () {
+		var $button = $( this ).prop( 'disabled', true ).text( t.saving || '' );
+		var $result = $root.find( '.js-iss-ai-css-result' );
+
+		ajax( 'inspiro_starter_sites_ai_save_css', {
+			css: cssEditorValue()
+		}, 30000 )
+			.done( function ( response ) {
+				var ok = !! ( response && response.success && response.data );
+				$result
+					.toggleClass( 'is-error', ! ok )
+					.text( ok ? response.data.message : responseMessage( response ) )
+					.removeAttr( 'hidden' );
+			} )
+			.fail( function ( xhr, textStatus ) {
+				$result.addClass( 'is-error' )
+					.text( xhrDetail( xhr, textStatus ) || t.error_generic || '' )
+					.removeAttr( 'hidden' );
+			} )
+			.always( function () {
+				$button.prop( 'disabled', false ).text( t.edit_css_save || '' );
+			} );
+	} );
+
+	$root.on( 'click', '.js-iss-ai-css-back', function () {
+		showStep( 'input' );
 	} );
 
 	// "Enhance with AI": expand a thin description into a vivid brief
